@@ -32,7 +32,15 @@ def byob(texture: str):
     light_dirt_background = brightness(texture_file, 0.3)
     light_dirt_background.save("light_dirt_background.png")
 
-    tab_selected, tab_selected_highlighted = generate_tab_selected(texture_file)
+    (
+        tab,
+        tab_highlighted,
+        tab_selected,
+        tab_selected_highlighted,
+    ) = generate_tab_selected(texture_file)
+
+    tab.save("tab.png")
+    tab_highlighted.save("tab_highlighted.png")
     tab_selected.save("tab_selected.png")
     tab_selected_highlighted.save("tab_selected_highlighted.png")
 

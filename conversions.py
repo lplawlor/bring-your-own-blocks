@@ -1,5 +1,4 @@
 from PIL import Image, ImageEnhance
-from typing import Tuple
 
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)
@@ -16,7 +15,9 @@ def contrast(image: Image.Image, factor: float) -> Image.Image:
     return ImageEnhance.Contrast(image).enhance(factor)
 
 
-def generate_tab_selected(texture: Image.Image) -> Tuple[Image.Image, Image.Image]:
+def generate_tab_selected(
+    texture: Image.Image
+) -> tuple[Image.Image, Image.Image, Image.Image, Image.Image]:
     """Generate tab_selected.png and tab_selected_highlighted.png from a texture.
 
     The texture must be a square image of dimensions which are a multiple of 32.
@@ -73,20 +74,50 @@ def generate_tab_selected(texture: Image.Image) -> Tuple[Image.Image, Image.Imag
 
     # Create the image which will become tab_selected_highlighted.png
     # It is the same as tab_selected.png, but with white bars inside of the black bars
-    tab_selected_highlighed = tab_selected.copy()
+    tab_selected_highlighted = tab_selected.copy()
 
     # Add the white bars just inside the black bars
     horizontal_white_bar = Image.new("RGBA", (tab_w - 2 * scale, scale), WHITE)
     veritical_white_bar = Image.new("RGBA", (scale, tab_h), WHITE)
-    tab_selected_highlighed.paste(horizontal_white_bar, (scale, scale))
-    tab_selected_highlighed.paste(veritical_white_bar, (scale, scale))
-    tab_selected_highlighed.paste(veritical_white_bar, (tab_w - 2 * scale, scale))
+    tab_selected_highlighted.paste(horizontal_white_bar, (scale, scale))
+    tab_selected_highlighted.paste(veritical_white_bar, (scale, scale))
+    tab_selected_highlighted.paste(veritical_white_bar, (tab_w - 2 * scale, scale))
 
     # Cut off 2*scale squares from the bottom corners of both images
     corner_cut = Image.new("RGBA", (2 * scale, 2 * scale))
     tab_selected.paste(corner_cut, (0, crop_h))
     tab_selected.paste(corner_cut, (four_tiled_w, crop_h))
-    tab_selected_highlighed.paste(corner_cut, (0, crop_h))
-    tab_selected_highlighed.paste(corner_cut, (four_tiled_w, crop_h))
+    tab_selected_highlighted.paste(corner_cut, (0, crop_h))
+    tab_selected_highlighted.paste(corner_cut, (four_tiled_w, crop_h))
 
-    return tab_selected, tab_selected_highlighed
+    # Crop just the section used for tab.png and tab_highlighted.png
+    tab_crop = tab_selected.crop((scale, scale, tab_w - scale, tab_h - 6 * scale))
+
+    # Paste the cropped section into the image which will become tab.png
+    # Note that it is pasted offcenter vertically, with several transparent rows at the top and bottom
+    tab = Image.new("RGBA", (tab_w, tab_h))
+    tab.paste(tab_crop, (scale, 5 * scale))
+
+    # Unselected tabs are darker and less contrasted than selected tabs
+    tab = brightness(tab, 0.60)
+    tab = contrast(tab, 0.90)
+
+    # Copy to the image which will become tab_highlighted.png
+    tab_highlighted = tab.copy()
+
+    # Add black bars along the top, left and right edges of the image
+    tab_highlighted.paste(horizontal_black_bar, (0, 4 * scale))
+    tab_highlighted.paste(vertical_black_bar, (0, 4 * scale))
+    tab_highlighted.paste(vertical_black_bar, (tab_w - scale, 4 * scale))
+
+    # Add white bars along all sides, just inside the black bars
+    tab_highlighted.paste(horizontal_white_bar, (scale, 5 * scale))
+    tab_highlighted.paste(horizontal_white_bar, (scale, tab_h - 3 * scale))
+    tab_highlighted.paste(veritical_white_bar, (scale, 5 * scale))
+    tab_highlighted.paste(veritical_white_bar, (tab_w - 2 * scale, 5 * scale))
+
+    # Remove the corners which got touched by the vertical bars
+    tab_highlighted.paste(corner_cut, (0, crop_h))
+    tab_highlighted.paste(corner_cut, (four_tiled_w, crop_h))
+
+    return tab, tab_highlighted, tab_selected, tab_selected_highlighted
