@@ -5,7 +5,7 @@ from PIL import Image, UnidentifiedImageError
 from conversions import (
     brightness,
     generate_tab_sprites,
-    generate_seperators,
+    generate_separators,
     tab_sprites_mcmeta,
 )
 
@@ -98,10 +98,10 @@ def byob(texture: str, output: str, min_version: int, max_version: int):
         light_dirt_background = brightness(texture_file, 0.3)
         light_dirt_background.save(gui_dir / "light_dirt_background.png")
 
-        header, footer = generate_seperators(texture_file)
+        header, footer = generate_separators(texture_file)
 
-        header.save(gui_dir / "header_seperator.png")
-        footer.save(gui_dir / "footer_seperator.png")
+        header.save(gui_dir / "header_separator.png")
+        footer.save(gui_dir / "footer_separator.png")
 
         tab_sprites = generate_tab_sprites(texture_file)
 
@@ -109,7 +109,7 @@ def byob(texture: str, output: str, min_version: int, max_version: int):
         if min_version < 16:
             tab_sprites["tab_button"].save(gui_dir / "tab_button.png")
 
-        # Seperate sprites stored in the sprites folder are used from pack-version 16 onwards
+        # Separate sprites stored in the sprites folder are used from pack-version 16 onwards
         if max_version >= 16:
             widget_dir = gui_dir / "sprites/widget"
             widget_dir.mkdir(parents=True, exist_ok=True)

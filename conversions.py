@@ -163,8 +163,8 @@ def tab_sprites_mcmeta(texture) -> str:
     return json.dumps(mcmeta, indent=4)
 
 
-def generate_seperators(texture: Image.Image) -> tuple[Image.Image, Image.Image]:
-    """Generate header_seperator.png and footer_seperator.png from a texture.
+def generate_separators(texture: Image.Image) -> tuple[Image.Image, Image.Image]:
+    """Generate header_separator.png and footer_separator.png from a texture.
 
     The texture must be a square image of dimensions which are a multiple of 32.
     Textures less than 32x32 will be resized to 32x32 using Nearest-Neighbour sampling.
@@ -179,12 +179,12 @@ def generate_seperators(texture: Image.Image) -> tuple[Image.Image, Image.Image]
     # Scale relative to a 32x32 texture
     scale = texture_l // 32
 
-    # Get the first 1/16th of the texture for the footer seperator
-    # And the second 1/16th of the texture for the header seperator
+    # Get the first 1/16th of the texture for the footer separator
+    # And the second 1/16th of the texture for the header separator
     footer = texture.crop((0, 0, texture_l, 2 * scale))
     header = texture.crop((0, 2 * scale, texture_l, 4 * scale))
 
-    # Half of each seperator is lighter than the other
+    # Half of each separator is lighter than the other
     # (note that they are still darkened, just not as much)
     # They are also decontrasted, giving a sepia tone with the default dirt texture
     footer_light = footer.crop((0, 0, texture_l, scale))
