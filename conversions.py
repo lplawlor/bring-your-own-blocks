@@ -121,11 +121,22 @@ def generate_tab_sprites(texture: Image.Image) -> dict[str, Image.Image]:
     tab_highlighted.paste(corner_cut, (0, crop_h))
     tab_highlighted.paste(corner_cut, (four_tiled_w, crop_h))
 
+    # tab_button.png is just a 256x256 square containing all 4 sprites
+    # It is only used for resource packs pre pack-version 16
+    tab_button = Image.new("RGBA", (256 * scale, 256 * scale))
+
+    # Paste the sprites into the image
+    tab_button.paste(tab_selected, (0, 0))
+    tab_button.paste(tab_selected_highlighted, (0, tab_h))
+    tab_button.paste(tab, (0, 2 * tab_h))
+    tab_button.paste(tab_highlighted, (0, 3 * tab_h))
+
     return {
         "tab": tab,
         "tab_highlighted": tab_highlighted,
         "tab_selected": tab_selected,
         "tab_selected_highlighted": tab_selected_highlighted,
+        "tab_button": tab_button,
     }
 
 
