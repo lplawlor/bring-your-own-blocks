@@ -1,6 +1,11 @@
 import click
 from PIL import Image, UnidentifiedImageError
-from conversions import brightness, generate_tab_sprites, generate_seperators
+from conversions import (
+    brightness,
+    generate_tab_sprites,
+    generate_seperators,
+    tab_sprites_mcmeta,
+)
 
 
 @click.command()
@@ -32,17 +37,13 @@ def byob(texture: str):
     light_dirt_background = brightness(texture_file, 0.3)
     light_dirt_background.save("light_dirt_background.png")
 
-    (
-        tab,
-        tab_highlighted,
-        tab_selected,
-        tab_selected_highlighted,
-    ) = generate_tab_sprites(texture_file)
+    tab_sprites = generate_tab_sprites(texture_file)
+    mcmeta = tab_sprites_mcmeta(texture_file)
+    for name in ("tab", "tab_highlighted", "tab_selected", "tab_selected_highlighted"):
+        tab_sprites[name].save(f"{name}.png")
 
-    tab.save("tab.png")
-    tab_highlighted.save("tab_highlighted.png")
-    tab_selected.save("tab_selected.png")
-    tab_selected_highlighted.save("tab_selected_highlighted.png")
+        with open(f"{name}.png.mcmeta", "w") as f:
+            f.write(mcmeta)
 
     header, footer = generate_seperators(texture_file)
 

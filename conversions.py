@@ -1,3 +1,4 @@
+import json
 from PIL import Image, ImageEnhance
 
 WHITE = (255, 255, 255, 255)
@@ -15,9 +16,7 @@ def contrast(image: Image.Image, factor: float) -> Image.Image:
     return ImageEnhance.Contrast(image).enhance(factor)
 
 
-def generate_tab_sprites(
-    texture: Image.Image
-) -> tuple[Image.Image, Image.Image, Image.Image, Image.Image]:
+def generate_tab_sprites(texture: Image.Image) -> dict[str, Image.Image]:
     """Generate the tab sprites from a texture.
 
     Specifically, tab.png, tab_highlighted.png, tab_selected.png and tab_selected_highlighted.png.
@@ -122,12 +121,40 @@ def generate_tab_sprites(
     tab_highlighted.paste(corner_cut, (0, crop_h))
     tab_highlighted.paste(corner_cut, (four_tiled_w, crop_h))
 
-    return tab, tab_highlighted, tab_selected, tab_selected_highlighted
+    return {
+        "tab": tab,
+        "tab_highlighted": tab_highlighted,
+        "tab_selected": tab_selected,
+        "tab_selected_highlighted": tab_selected_highlighted,
+    }
+
+
+def tab_sprites_mcmeta(texture) -> str:
+    """Generate the .mcmeta file used for each of the tab sprites."""
+    scale = max(1, texture.size[0] // 32)
+
+    mcmeta = {
+        "gui": {
+            "scaling": {
+                "type": "nine_slice",
+                "width": 130 * scale,
+                "height": 24 * scale,
+                "border": {
+                    "left": 2 * scale,
+                    "top": 2 * scale,
+                    "right": 2 * scale,
+                    "bottom": 0,
+                },
+            }
+        }
+    }
+
+    return json.dumps(mcmeta, indent=4)
 
 
 def generate_seperators(texture: Image.Image) -> tuple[Image.Image, Image.Image]:
     """Generate header_seperator.png and footer_seperator.png from a texture.
-    
+
     The texture must be a square image of dimensions which are a multiple of 32.
     Textures less than 32x32 will be resized to 32x32 using Nearest-Neighbour sampling.
     """
