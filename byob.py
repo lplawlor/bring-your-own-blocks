@@ -81,9 +81,9 @@ def byob(texture: str, output: str, min_version: int, max_version: int):
     if width != height:
         raise click.BadOptionUsage("texture", f"{texture} is not a square image")
 
-    if width != 16 and width % 32 != 0:
+    if width not in (16, 32):
         raise click.BadOptionUsage(
-            "texture", "Supported texture sizes are 16x16 or any multiple of 32x32."
+            "texture", "Supported texture sizes are 16x16 or 32x32."
         )
 
     base_dir = Path(output)
