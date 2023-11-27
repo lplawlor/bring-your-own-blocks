@@ -1,6 +1,6 @@
 import click
 from PIL import Image, UnidentifiedImageError
-from conversions import brightness, generate_tab_selected
+from conversions import brightness, generate_tab_sprites, generate_seperators
 
 
 @click.command()
@@ -37,12 +37,17 @@ def byob(texture: str):
         tab_highlighted,
         tab_selected,
         tab_selected_highlighted,
-    ) = generate_tab_selected(texture_file)
+    ) = generate_tab_sprites(texture_file)
 
     tab.save("tab.png")
     tab_highlighted.save("tab_highlighted.png")
     tab_selected.save("tab_selected.png")
     tab_selected_highlighted.save("tab_selected_highlighted.png")
+
+    header, footer = generate_seperators(texture_file)
+
+    header.save("header_seperator.png")
+    footer.save("footer_seperator.png")
 
 
 if __name__ == "__main__":

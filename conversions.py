@@ -15,10 +15,12 @@ def contrast(image: Image.Image, factor: float) -> Image.Image:
     return ImageEnhance.Contrast(image).enhance(factor)
 
 
-def generate_tab_selected(
+def generate_tab_sprites(
     texture: Image.Image
 ) -> tuple[Image.Image, Image.Image, Image.Image, Image.Image]:
-    """Generate tab_selected.png and tab_selected_highlighted.png from a texture.
+    """Generate the tab sprites from a texture.
+
+    Specifically, tab.png, tab_highlighted.png, tab_selected.png and tab_selected_highlighted.png.
 
     The texture must be a square image of dimensions which are a multiple of 32.
     Textures less than 32x32 will be resized to 32x32 using Nearest-Neighbour sampling.
@@ -30,7 +32,7 @@ def generate_tab_selected(
     # The texture is assumed to be square
     texture_l = texture.size[0]
 
-    # Only textures which are a multiple of 32 are supported
+    # Scale relative to a 32x32 texture
     scale = texture_l // 32
 
     # Crop the texture to be the top 11/16ths of the original texture
@@ -121,3 +123,47 @@ def generate_tab_selected(
     tab_highlighted.paste(corner_cut, (four_tiled_w, crop_h))
 
     return tab, tab_highlighted, tab_selected, tab_selected_highlighted
+
+
+def generate_seperators(texture: Image.Image) -> tuple[Image.Image, Image.Image]:
+    """Generate header_seperator.png and footer_seperator.png from a texture.
+    
+    The texture must be a square image of dimensions which are a multiple of 32.
+    Textures less than 32x32 will be resized to 32x32 using Nearest-Neighbour sampling.
+    """
+    # Resize the texture to be at least 32x32
+    if texture.size[0] < 32:
+        texture = texture.resize((32, 32), Image.NEAREST)
+
+    # The texture is assumed to be square
+    texture_l = texture.size[0]
+
+    # Scale relative to a 32x32 texture
+    scale = texture_l // 32
+
+    # Get the first 1/16th of the texture for the footer seperator
+    # And the second 1/16th of the texture for the header seperator
+    footer = texture.crop((0, 0, texture_l, 2 * scale))
+    header = texture.crop((0, 2 * scale, texture_l, 4 * scale))
+
+    # Half of each seperator is lighter than the other
+    # (note that they are still darkened, just not as much)
+    # They are also decontrasted, giving a sepia tone with the default dirt texture
+    footer_light = footer.crop((0, 0, texture_l, scale))
+    footer_light = contrast(footer_light, 0.35)
+    footer_light = brightness(footer_light, 0.75)
+
+    header_light = header.crop((0, 0, texture_l, scale))
+    header_light = contrast(header_light, 0.35)
+    header_light = brightness(header_light, 0.75)
+
+    # The other half is darker
+    footer = brightness(footer, 0.05)
+    header = brightness(header, 0.25)
+
+    # Paste the lighter half. Note that for the footer,
+    # the lighter half is on bottom, and vice versa for the header
+    footer.paste(footer_light, (0, scale))
+    header.paste(header_light, (0, 0))
+
+    return header, footer
