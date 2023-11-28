@@ -57,7 +57,8 @@ from conversions import (
 )
 def byob(texture: str, output: str, min_version: int, max_version: int):
     try:
-        texture_file = Image.open(texture)
+        texture_file = Image.open(texture).convert("RGBA")
+
     except UnidentifiedImageError:
         raise click.BadOptionUsage("texture", f"{texture} is not a valid image file")
 
