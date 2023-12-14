@@ -1,0 +1,43 @@
+exclude = [
+    ".direnv",
+    ".git",
+    ".git-rewrite",
+    ".ruff_cache",
+    ".venv",
+    "venv",
+    "__pypackages__",
+]
+
+line-length = 120
+indent-width = 4
+
+target-version = "py311"
+
+[lint]
+select = ["ALL"]
+ignore = [
+    "D203", # Use D211 instead
+    "D213", # Use D212 instead
+    "COM812", # Causes warning with `ruff format`
+    "ISC001", # Causes warning with `ruff format`
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[format]
+# Use double quotes for strings.
+quote-style = "double"
+
+# Indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Automatically detect the appropriate line ending.
+line-ending = "auto"
