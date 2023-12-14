@@ -76,6 +76,11 @@ def byob(texture: str, output: str, min_format: int, max_format: int) -> None:
         error_message = f"{texture} is not a valid image file"
         raise click.BadOptionUsage(option, error_message) from e
 
+    if texture_file.size[0] != texture_file.size[1]:
+        option = "texture"
+        error_message = f"{texture} is not a square image."
+        raise click.BadOptionUsage(option, error_message)
+
     if min_format > max_format:
         option = "min-format"
         error_message = "min-format must be less than or equal to max-format"
