@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/sign.png" alt="Bring Your Own Blocks" width=600 style="image-rendering:pixelated"/>
+  <img src="./assets/sign_6x.png" alt="Bring Your Own Blocks" />
 </p>
 
 <p align="center">
