@@ -1,3 +1,8 @@
+> [!CAUTION]
+> ## Project Archived
+> This project has been archived and is no longer supported.
+> If you wish to use this code in the future, use **extreme caution**, as there have been numerous security vulnerabilities uncovered in the pinned version of the Pillow library.
+
 <p align="center">
   <img src="./assets/sign_6x.png" alt="Bring Your Own Blocks" />
 </p>
